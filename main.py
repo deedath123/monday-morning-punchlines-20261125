@@ -20,10 +20,20 @@ def validate_entry(text: str) -> None:
     text.encode("utf-8")  # raises if not valid UTF-8-encodable
 
 
+def check_morning_punchline_shape(text: str) -> None:
+    lowered = text.lower()
+    morning_markers = ("alarm", "monday", "standup", "coffee")
+    assert any(marker in lowered for marker in morning_markers), "entry needs a morning cue"
+    words = lowered.split()
+    assert len(words) >= 24, f"entry needs at least 24 words, got {len(words)}"
+    assert "still" in lowered or "fired" in lowered, "entry needs a twist turn"
+
+
 def main() -> None:
     import os
 
     validate_entry(ENTRY)
+    check_morning_punchline_shape(ENTRY)
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8", newline="") as f:
         f.write(ENTRY)
